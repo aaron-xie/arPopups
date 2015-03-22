@@ -1,0 +1,37 @@
+﻿/* @Popups Stylesheet
+---------------------------------------------------------------------- */
+/*默认样式*/
+.arpopups{position:absolute;z-index:3000;min-width:300px;line-height:1.5;background:#fff;box-shadow:0 0 5px rgba(0,0,0,0.5);text-align:left;}
+.arpopups .arp-title{line-height:36px;background:url(bg_title.png) repeat-x 0 -99px;}
+.arpopups .arp-title img{max-height:22px;vertical-align:middle;}
+.arpopups .arp-title span{display:inline-block;padding-left:10px;height:36px;font-size:12px;font-weight:bold;color:#fff;}
+.arpopups .arp-title span strong{padding:0 3px;color:#ff0;}
+.arpopups div.arp-close{position:absolute;top:0;right:0;width:40px;height:36px;background:url(btn_close.png) no-repeat 5px 0;overflow:hidden;text-indent:-200em;cursor:pointer;}
+.arpopups div.arp-close:hover{background-color:rgba(255,255,255,.1);}
+
+.arp-content{padding:20px 10px;}
+.arp-content h3{margin:0 15px;line-height:2;font-size:14px;text-align:center;}
+.arp-content a{text-decoration:underline;color:#15c;}
+.arp-content a.btn{color:#fff;}
+.arp-content .note{margin:0 15px;}
+.arp-overlay{position:fixed;left:0;top:0;z-index:2999;width:100%;height:100%;background:#000;opacity:0.3;Filter:alpha(opacity=30);}
+
+/*弹窗样式2[灰色]*/
+.arpopups2 .arp-title{border-bottom:1px solid #cfcfcf;background:url(bg_title.png) repeat-x 0 -155px;}
+.arpopups2 .arp-title span{font-size:12px;color:#696969;}
+.arpopups2 div.arp-close:hover{background-color:rgba(0,0,0,.05);}
+
+
+/*ajax提示*/
+.arpopups .ajax-loading{height:100px;background:url(loading.gif) no-repeat center center;}
+.arpopups .ajax-error{padding:20px 0;text-align:center;}
+.arpopups #ajax_loading{padding:20px;text-align:center;}
+
+/*for ie6*/
+/* Background iframe styling for IE6. Prevents ActiveX bleed-through (<select> form elements, etc.) */
+* html .arpopups{width:460px;}
+* iframe.ie6iframe {position:absolute;top:0;left:0;z-index:-1;width: expression(this.parentNode.offsetWidth+'px');height: expression(this.parentNode.offsetHeight+'px');}
+* html .arp-overlay{position:absolute;left:expression(eval(document.documentElement.scrollLeft));top:expression(eval(document.documentElement.scrollTop));}
+* html .form-format input.input-txt{padding:3px 0 1px 3px;width:15em;vertical-align:top;cursor:default;vertical-align:middle;}
+/** html{overflow:hidden;}
+* html body{height:100%;overflow:auto;}*/

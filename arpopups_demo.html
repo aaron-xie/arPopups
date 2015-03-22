@@ -1,0 +1,506 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<title>jQuery弹出框插件arPopups实例</title>  
+<style type="text/css">
+/* @General Stylesheet
+---------------------------------------------------------------------- */
+/*=S Reset */
+*{margin:0;padding:0;}
+img{border:0;}
+ul{list-style:none;}
+/*=S basic elements ff*/
+body{background:#fff;font:12px/1.5 Tahoma, Helvetica, Arial, sans-serif, "\5B8B\4F53";color:#333;-webkit-text-size-adjust:none;}
+
+ol{padding-left:20px;}
+
+.content{margin:50px auto;padding:50px;width:778px;border:1px solid #dedede;box-shadow:0 0 5px rgba(0,0,0,0.1);}
+.content p{margin-top:10px;}
+.content p.title{margin-top:30px;padding:0 0 5px;border-bottom:1px solid #efefef;font-weight:bold;}
+.content p a{color:#00f;text-decoration:underline;}
+.content code{display:block;padding:5px;border:1px solid #dedede;background:#f5f5f5;color:#228b22;}
+.example{margin-top:20px;}
+.example dt{margin-top:15px;font-size:16px;font-weight:bold;}
+.example dd{margin-top:5px;}
+.example dd p{margin-top:0;text-align:right;}
+</style>
+<link href="images/arpopups.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.arPopups.js"></script> 
+<script type="text/javascript"> 
+$(function(){
+	//$.fn.arPopups.defaults.trigger = "hover";
+	
+	//无参数弹窗
+	$("#example1").arPopups();
+	
+	//透明背景弹窗
+	$("#example2").arPopups({
+	  overlay:0,
+	  html:"<p>点击弹出背景为透明的弹窗</p>" 
+	});
+	
+	//定时关闭窗口
+	$("#example3").arPopups({
+		poptitle:"<strong>5</strong>秒钟后自动关闭此窗口",
+		html:"定时关闭弹窗",
+		timeout:5000,
+		callback:function(obj,apopups){
+		  var closetime = parseInt(5,10);
+		  $(".arp-title").find('strong').html(closetime);
+		  var handle = setInterval(function(){
+			  closetime--;
+			  $(".arp-title").find('strong').html(closetime);
+			  if (closetime<=0) clearInterval(handle);
+		  }, 1000); 
+		}
+	});
+	
+	//无标题弹窗
+	$("#example4").arPopups({
+		poptitle:false,
+		html:'这是一个没有标题的弹窗<br />你可以按ESC键，或者双击背景或点击<a href="#" class="arp-close">关闭</a>'
+	});
+	
+	//不可拖动的弹窗
+	$('#example5').arPopups({
+		drag:false,
+		poptitle:'arPopups功能简介部分的层',
+		url:"#info"
+	});
+	
+	//分离触发事件
+	$("#example6").click(function(){
+	   $.fn.arPopups({
+		 trigger:"auto",
+		 poptitle:"onclick弹窗",
+		 url:"#info"  
+	   });
+	});
+	
+	//加载html页面
+	$("#example7").arPopups({
+		requestType: "iframe",
+		url:"ajax_content.html"
+	});
+	
+	//ajax选择性加载html内容
+	$("#example8").arPopups({
+		requestType:"ajax",
+		popsize:{width:600},
+		url:"ajax_content.html",
+		filter:"#ajaxCon"
+	});
+	
+	//加载本页面内容
+	$('#example9').arPopups({
+		url:"#info"
+	});
+	
+	//加载图片
+	$('#example10').arPopups({
+	   url:"@href",
+	   requestType:"img"
+	});
+	
+	//加载百度首页
+	$("#example11").arPopups({
+		requestType:"iframe",
+		popsize:{width:800,height:400},
+		url:"http://www.baidu.com"
+	});
+	
+	//定制弹窗样式
+	$("#example12").arPopups({
+		poptitle:"这是一样定制的弹窗样式",
+		popwrap:"arpopups2",
+		popsize:{width:600},
+		url:$("#info")
+	});
+
+	//关闭弹窗后执行操作
+	$("#afterClose").arPopups({
+		requestType: "ajax",
+		popsize:{width:680},
+		url:"ajax_content.html",
+		filter:".art-con",
+		afterClose:function(){
+			alert("关闭弹窗后执行操作...") 
+		}
+	});
+	
+	//利用callback弹窗后执行相应操作
+	$("#afterShow").arPopups({
+	   poptitle:'弹窗后执行相应操作',
+	   html:'<div id="callbackContent">\n'
+	   +'<h1>弹窗后修改字体大小和颜色</h1>\n'
+	   +'<ul class="list">\n'
+	   +'<li>屌丝如何选择一体机？　神舟五月明星本盘点</li>\n'
+	   +'<li>高性能大屏平板推荐 国产四核强机M8 Pro评测</li>\n'
+	   +'<li>超便携小巧平板PK 国产时尚手机平板电脑评测</li>\n'
+	   +'</ul>\n'
+	   +'</div>',
+	   popsize:{width:360,height:240},
+	   callback:function(){
+		 //修改标签字体大小  
+		 $("#callbackContent").find("h1").css({
+			 fontSize:16,
+			 color:"#116c00"
+		 });
+	   }
+	});
+	
+	//多弹窗展示
+	$(".multi-pop").arPopups({
+		poptitle:'多窗口展示效果',
+		overlay:0,
+		requestType:"ajax",
+		url:"@href",
+		popsize:{width:360},
+		callback:function(obj,arpop){
+			obj.css({
+			   fontWeight:"bold",
+			   color:"#116c00"
+			});
+			arpop.css({
+			   color:"#228b22"
+			});
+			arpop.find("strong").click(function(){
+				$.arPopups.close(arpop)
+			});
+		}
+	});
+	$(".multi-pop2").arPopups({
+		poptitle:'多窗口展示效果',
+		overlay:0,
+		requestType:"ajax",
+		url:"@href",
+		popsize:{width:360},
+		callback:function(obj,arpop){
+			obj.css({
+			   fontWeight:"bold",
+			   color:"#c00"
+			});
+			arpop.css({
+			   color:"#369"
+			});
+			arpop.find("strong").click(function(){
+				$.arPopups.close(arpop)
+			});
+		}
+	});
+	
+	//内弹窗
+	$(".inner-pop").arPopups({
+		poptitle:'这为弹窗内部的弹窗',
+		requestType: "ajax",
+		popsize:{width:220},
+		url:"ajax_content.html",
+		filter:".art-con"
+	});
+});
+</script>
+</head> 
+<body>
+<div class="content"> 
+  <h1>jQuery.arPopups Demo</h1>
+  <p class="title">arPopups特点与功能</p>
+  <ol>
+      <li>可自定义触发事件（支持所有jq事件，如click、hover、keyup等等，默认click）；</li>
+      <li>可分离触发事件，让外部操作有更多的可控性（在传递参数时特别有用）</li>
+      <li>支持设置弹窗定时关闭：如timeout:8000表示8s后自动关闭弹窗</li>
+      <li>支持ESC键关闭，或者在背景上双击即可关闭弹窗</li>
+      <li>元素class设为arp-close即可点击关闭弹窗，无论是ajax的html，还是隐藏的html，或者是自定义的html，甚至于iframe的内容中的.arp-close都能实现关闭功能</li>
+      <li>支持外部弹窗关闭方法：$.arPopups.close()</li>
+      <li>支持关闭后回调函数，回调函数return true在弹窗关闭后触发动作可执行浏览器默认操作；</li>
+      <li>自定义标题内容与窗口样式（外部CSS样式定制）；</li>
+      <li>可自定义窗口尺寸(popsize:{width:300,height:300})与及显示位置(position:{left:200,top:600})，默认居中显示；</li>
+      <li>自定义遮罩层透明度；</li>
+      <li>可以根据需要添加弹窗标题</li>      
+      <li>支持html内容自定义</li>
+      <li>支持在弹窗显示本页面里的内容</li>
+      <li>支持ajax页面内容，可自定义ajax路径（可设为某一属性值，如@href）</li>
+      <li>选择性ajax加载目标内容（id或class）</li>
+      <li>动态页面下支持ajax传递参数(requestData)选择性加载内容</li>
+      <li>支持iframe页面调用，支持跨域调用</li>
+      <li>支持callback回调函数，回调函数里可对当前弹窗以及触发对象进行操作，回调函数return true在弹窗后触发动作可执行浏览器默认操作；</li>
+      <li>支持弹窗拖拽功能，drag为false关闭拖拽功能</li>
+      <li>可在外部设定插件默认参数</li>
+      <li>支持同页面多个弹窗</li>
+      <li>支持内弹窗（弹窗内部新增弹窗）</li>
+  </ol>
+  <p class="title">arPopups演示部分：</title>
+  <ul class="note">
+  	<li>引入jQuery.arPopups.js文件</li>
+	<li>引入arpop_style.css文件</li>
+	<li><span style="color:red">注意</span>：通过imgURL路径设置图片地址~例如：$("div").arPopups(images/"})</li>
+  </ul>
+  <dl class="example">
+    <dt>ie6遮挡测试</dt>
+    <dd>
+      <select>
+        <option>ie6 test1</option>
+        <option>ie6 test2</option>
+        <option>ie6 test3</option>
+      </select>
+    </dd>
+    <dt>1、默认（不带参数）</dt>
+ 	<dd>
+      <code>
+        <pre>
+        $("#example1").arPopups();
+        </pre>
+      </code>
+      <p><a href="#" id="example1">不带任何参数的弹窗</a></p>
+    </dd>
+    <dt>2、背景为透明的弹窗</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#example2").arPopups({
+            overlay:0,
+            html:"&lt;p&gt;点击弹出透明背景的弹窗&lt;/p&gt;"
+        });
+        </pre>
+      </code>
+      <p><a href='#' id="example2">点击弹出透明背景的弹窗</a></p>
+    </dd>
+    <dt>3、弹出5秒后自动关闭的窗口</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#example3").arPopups({
+             poptitle:"&lt;strong&gt;5&lt;/strong&gt;秒钟后自动关闭此窗口",
+             html:"定时关闭弹窗",
+             timeout:5000,
+             callback:function(obj,apopups){
+                console.log(obj+","+apopups);
+                var closetime = parseInt(5,10);
+                $(".arp-title").find('strong').html(closetime);
+                var handle = setInterval(function(){
+                    closetime--;
+                    $(".arp-title").find('strong').html(closetime);
+                    if (closetime<=0) clearInterval(handle);
+                }, 1000); 
+             }
+         });
+        </pre>
+      </code>
+      <p><a href="#" id="example3">弹出5秒钟后自动关闭弹窗</a></p>
+    </dd>
+    <dt>4、没有标题的弹出框</dt>
+    <dd>
+      <code>
+        <pre>
+         $("#example4").arPopups({
+             poptitle:false,
+             html:'这是一个没有标题的弹窗&lt;br /&gt;你可以按ESC键，或者双击背景或点击&lt;a href="#" class="arp-close"&gt;关闭&lt;/a&gt;'
+         });
+        </pre>
+      </code>
+      <p><a id="example4" href="#">没有标题的弹出框</a></p>
+    </dd>
+    <dt>5、不可拖拽的弹窗</dt>
+    <dd>
+      <code>
+        <pre>
+        $('#example5').arPopups({
+            drag:false,
+            poptitle:'arPopups功能简介部分的层',
+            url:"#info"
+        });
+        </pre>
+      </code>
+      <p><a id="example5" href="#">不可拖拽的弹窗</a></p>
+    </dd>
+    <dt>6、分离触发事件</dt>
+    <dd>
+     <code>
+        <pre>
+        $("#example6").click(function(){
+             $.fn.arPopups({
+               trigger:"auto",
+               poptitle:"onclick弹窗",
+               url:"#info"  
+             });
+         });
+         
+         或者直接写到html代码中：
+         &lt;a href="#" onclick='$.fn.arPopups({trigger:"auto",poptitle:"onclick弹窗",url:"#info"}); return false;'&gt;onclick触发&lt;/a&gt;
+       </pre>
+      </code>
+      <p><button id="example6">分离触发事件，onclick显示弹窗</button> &nbsp; <a href="#" onclick='$.fn.arPopups({trigger:"auto",poptitle:"onclick弹窗",url:"#info"}); return false;'>html代码中onclick触发</a></p>
+    </dd>
+    <dt>7、加载html页面</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#example7").arPopups({
+            requestType: "iframe",
+            url:"ajax_content.html"
+        });
+       </pre>
+      </code>
+     <p><a id="example7" href="ajax_content.html">加载本地html页面</a></p>
+   </dd>
+    <dt>8、Ajax选择性加载内容</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#example8").arPopups({
+            requestType:"ajax",
+            filter:"#ajax_con",
+            url:"ajax_content.html"
+        });
+        </pre>
+      </code>
+      <p><a id="example8" href="1.html">选择性加载ajax_content.html内容</a></p>
+    </dd>
+    <dt>9、加载本页面内容</dt>
+    <dd>
+      <code>
+        <pre>
+        $('#example9').arPopups({
+            url:"#info"
+        });
+        </pre>
+      </code>
+      <p><a id="example9" href="#info">显示本页中id为#info的层的内容</a></p>
+    </dd>
+    <dt>10、加载图片</dt>
+    <dd>
+      <code>
+        <pre>
+        $('#example7').arPopups({
+            url:"@href",
+            requestType:"img"
+        });
+        </pre>
+      </code>
+      <p><a  id="example10" href="images/pic.jpg">图片弹窗</a></p>
+    </dd>
+    <dt>11、iframe 百度首页</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#example11").arPopups({
+            requestType:"iframe",
+            popsize:{width:800,height:400},
+            url:"http://www.baidu.com"
+        })
+        </pre>
+      </code>
+      <p><a id="example11" href="http://www.baidu.com">加载百度首页</a></p>
+    </dd>
+    <dt>12、定制的弹窗样式</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#example12").arPopups({
+            poptitle:"这是一样定制的弹窗样式",
+            popwrap:"arpopups2",
+            popsize:{width:600},
+            url:"#info"
+        });
+        </pre>
+      </code>
+      <p><a id="example12" href="#">定制的弹窗样式</a></p>
+    </dd>
+    <dt>13、关闭弹窗后执行操作</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#afterClose").arPopups({
+            requestType: "ajax",
+            popsize:{width:680},
+            url:"ajax_content.html",
+            filter:"art-con",
+            afterClose:function(){
+                alert("关闭弹窗后执行操作...") 
+            }
+        });
+        </pre>
+      </code>
+     <p><a href='#' id="afterClose" >关闭弹窗后执行操作</a></p>
+    </dd>
+    <dt>14、利用callback弹窗后执行相应操作</dt>
+    <dd>
+      <code>
+        <pre>
+        $("#afterShow").arPopups({
+            poptitle:'弹窗后执行相应操作',
+            html:'&lt;div id="callbackContent"&gt;\n'
+            +'&lt;h1&gt;弹窗自定义内容&lt;/h1&gt;\n'
+            +'&lt;ul class="list"&gt;\n'
+            +'&lt;li&gt;屌丝如何选择一体机？　神舟五月明星本盘点&lt;/li&gt;\n'
+            +'&lt;li&gt;高性能大屏平板推荐 国产四核强机M8 Pro评测&lt;/li&gt;\n'
+            +'&lt;li&gt;超便携小巧平板PK 国产时尚手机平板电脑评测&lt;/li&gt;\n'
+            +'&lt;/ul&gt;\n'
+            +'&lt;/div&gt;',
+            popsize:{width:360,height:240},
+            callback:function(){
+             //修改标签字体大小  
+             $("#callbackContent").find("h1").css({
+                 fontSize:16,
+                 color:"#116c00"
+             });
+            }
+        });
+        </pre>
+      </code>
+     <p><a href='#' id="afterShow">利用callback弹窗后执行相应操作</a></p>
+    </dd>
+    <dt>15、多窗口展示</dt>
+    <dd>
+      <code>
+        <pre>
+        $(".multi-pop").arPopups({
+            poptitle:'多窗口展示效果',
+            overlay:0,
+            requestType:"ajax",
+            url:"@href",
+            popsize:{width:360},
+            callback:function(obj,arpop){
+                obj.css({
+                   fontWeight:"bold",
+                   color:"#116c00"
+                });
+                arpop.css({
+                   color:"#228b22"
+                });
+                arpop.find("strong").click(function(){
+                    $.arPopups.close(arpop)
+                });
+            }
+        });
+        $(".multi-pop2").arPopups({
+            poptitle:'多窗口展示效果',
+            overlay:0,
+            requestType:"ajax",
+            url:"@href",
+            popsize:{width:360},
+            callback:function(obj,arpop){
+                obj.css({
+                   fontWeight:"bold",
+                   color:"#c00"
+                });
+                arpop.css({
+                   color:"#369"
+                });
+                arpop.find("strong").click(function(){
+                    $.arPopups.close(arpop)
+                });
+            }
+        });
+        </pre>
+      </code>
+     <p><a href='ajax_content.html .art-con' class="multi-pop">多弹出窗口一</a> &nbsp; <a href='ajax_content.html #ajaxCon' class="multi-pop2">多弹出窗口二</a></p>
+    </dd>
+    <dd>
+      <div style="display:none" id="info" class="demo">这是来自隐藏div#info的消息<a class='arp-close' href="#">关闭</a> &nbsp; <a href="#" class="inner-pop">内弹窗</a></div>
+    </dd>
+  </dl>
+</div>
+</body>
+</html>
